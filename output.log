@@ -1,0 +1,25 @@
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://cs.jhu.edu/~yarowsky/cs466.html
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/466.officehours.html
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/601.466.l0.pdf
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+WARNING:bs4.dammit:Some characters could not be decoded, and were replaced with REPLACEMENT CHARACTER.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/Gonzalez-vs-Google-case.pdf
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+WARNING:bs4.dammit:Some characters could not be decoded, and were replaced with REPLACEMENT CHARACTER.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/601.466.on.exam.txt
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://www.cs.jhu.edu/~yarowsky/cs466slides/
+DEBUG:charset_normalizer:Encoding detection: ascii is most likely the one.
+DEBUG:visited:https://piazza.com/jhu/spring2025/601466666
+DEBUG:visited:http://www.cs.jhu.edu/~yarowsky/601.466.syl.pdf
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+DEBUG:charset_normalizer:Encoding detection: Unable to determine any suitable charset.
+WARNING:bs4.dammit:Some characters could not be decoded, and were replaced with REPLACEMENT CHARACTER.
