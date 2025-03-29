@@ -22,11 +22,23 @@ def parse_links(root, html):
             text = re.sub('\s+', ' ', text).strip()
             yield (parse.urljoin(root, link.get('href')), text)
 
-
+#sort by having the shorter ones first(I think shorter links tend to relate to more general pages, thus are more important)
+#ex: home/details would be more important than "click to view this amazing video"
 def parse_links_sorted(root, html):
-    # TODO: implement
-    return []
+    soup = BeautifulSoup(html, 'html.parser')
+    result = []
+    for link in soup.find_all('a'):
+        href = link.get('href')
+        if href:
+            text = link.string
+            if not text:
+                text = ''
+            text = re.sub('\s+', ' ', text).strip()
+            score = len(text)
+            result.append((score, parse.urljoin(root, link.get('href')), text))
 
+    result.sort()
+    return [(a,b) for _,a,b in result]
 
 def get_links(url):
     res = request.urlopen(url)
@@ -75,10 +87,26 @@ def crawl(root, wanted_content=[], within_domain=True):
     visited = []
     extracted = []
 
+    base = urlparse(root).netloc
+
     while not queue.empty():
         url = queue.get()
+
+        #skip visited ones
+        if url in visited:
+            continue
+
         try:
             req = request.urlopen(url)
+
+            #do the content type thing
+            content_type = req.headers['Content-Type']
+
+            if wanted_content and content_type not in wanted_content:
+                continue
+
+
+
             html = req.read()
 
             visited.append(url)
@@ -88,7 +116,16 @@ def crawl(root, wanted_content=[], within_domain=True):
                 extracted.append(ex)
                 extractlog.debug(ex)
 
-            for link, title in parse_links(url, html):
+            for link, title in parse_links_sorted(url, html):
+                p1 = urlparse(link)
+                p2 = urlparse(url)
+
+                #skip self reference
+                if p1.path == p2.path and p1.netloc == p2.netloc:
+                    continue
+                if p1.netloc != base and within_domain:
+                    continue
+
                 queue.put(link)
 
         except Exception as e:
@@ -105,6 +142,13 @@ def extract_information(address, html):
     results = []
     for match in re.findall('\d\d\d-\d\d\d-\d\d\d\d', str(html)):
         results.append((address, 'PHONE', match))
+   
+    for match in re.findall('[\w\.-]+@[\w\.-]+\.\w+', str(html)):
+        results.append((address, 'EMAIL', match))
+
+    for match in re.findall('[A-Z][a-zA-Z]*, [A-Z][a-zA-Z]* \d\d\d\d\d', str(html)):
+        results.append((address, 'ADDRESS', match))
+
     return results
 
 
