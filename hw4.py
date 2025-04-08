@@ -81,6 +81,8 @@ def crawl(root, wanted_content=[], within_domain=True):
     '''
     # TODO: implement
 
+    #print("crawling!")
+
     queue = Queue()
     queue.put(root)
 
@@ -90,6 +92,7 @@ def crawl(root, wanted_content=[], within_domain=True):
     base = urlparse(root).netloc
 
     while not queue.empty():
+        #print("walawala")
         url = queue.get()
 
         #skip visited ones
@@ -123,8 +126,16 @@ def crawl(root, wanted_content=[], within_domain=True):
                 #skip self reference
                 if p1.path == p2.path and p1.netloc == p2.netloc:
                     continue
-                if p1.netloc != base and within_domain:
+
+                #print(f"Checking link: {link}")
+                #print(f"  p1.netloc: {p1.netloc}")
+                #print(f"  base     : {base}")
+                if within_domain and not p1.netloc.endswith(base):
+                    #print("Skipping (outside domain)")
                     continue
+                #else:
+                    #print("Keeping (within domain or no restriction)")
+
 
                 queue.put(link)
 
