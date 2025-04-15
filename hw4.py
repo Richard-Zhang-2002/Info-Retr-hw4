@@ -74,7 +74,7 @@ def get_nonlocal_links(url):
     return filtered
 
 
-def crawl(root, wanted_content=[], within_domain=True):
+def crawl(root, wanted_content=[], within_domain=True, max_depth = 3):
     '''Crawl the url specified by `root`.
     `wanted_content` is a list of content types to crawl
     `within_domain` specifies whether the crawler should limit itself to the domain of `root`
@@ -84,7 +84,7 @@ def crawl(root, wanted_content=[], within_domain=True):
     #print("crawling!")
 
     queue = Queue()
-    queue.put(root)
+    queue.put((root,0))
 
     visited = []
     extracted = []
@@ -93,7 +93,17 @@ def crawl(root, wanted_content=[], within_domain=True):
 
     while not queue.empty():
         #print("walawala")
-        url = queue.get()
+        url, depth = queue.get()
+
+        if depth > max_depth:
+            continue
+
+        #prevent the webcal issue
+        if not url.startswith("http"):
+            if url.startswith("webcal://"):
+                url = url.replace("webcal://", "https://")
+            else:
+                continue
 
         #skip visited ones
         if url in visited:
@@ -104,6 +114,14 @@ def crawl(root, wanted_content=[], within_domain=True):
 
             #do the content type thing
             content_type = req.headers['Content-Type']
+
+            #only read html, dont waste time on pdf and mp4 and stuff
+            if 'text/html' not in content_type:
+                #print (content_type)
+                #print("not html")
+                continue
+            #else:
+                #print("html")
 
             if wanted_content and content_type not in wanted_content:
                 continue
@@ -137,7 +155,7 @@ def crawl(root, wanted_content=[], within_domain=True):
                     #print("Keeping (within domain or no restriction)")
 
 
-                queue.put(link)
+                queue.put((link,depth+1))
 
         except Exception as e:
             print(e, url)
@@ -151,13 +169,13 @@ def extract_information(address, html):
 
     # TODO: implement
     results = []
-    for match in re.findall('\d\d\d-\d\d\d-\d\d\d\d', str(html)):
+    for match in re.findall(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', str(html)):
         results.append((address, 'PHONE', match))
    
-    for match in re.findall('[\w\.-]+@[\w\.-]+\.\w+', str(html)):
+    for match in re.findall('[A-Za-z0-9][\w\.-]*@[\w\.-]+\.\w+', str(html)):
         results.append((address, 'EMAIL', match))
 
-    for match in re.findall('[A-Z][a-zA-Z]*, [A-Z][a-zA-Z]* \d\d\d\d\d', str(html)):
+    for match in re.findall(r'\b[A-Z][a-z]+(?: [A-Z][a-z]+)*, (?:[A-Z]{2}|[A-Z][a-z\.]+) \d{5}\b', str(html)):
         results.append((address, 'ADDRESS', match))
 
     return results
