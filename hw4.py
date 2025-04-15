@@ -95,7 +95,7 @@ def crawl(root, wanted_content=[], within_domain=True, max_depth = 3):
         #print("walawala")
         url, depth = queue.get()
 
-        if depth > max_depth:
+        if depth > max_depth and max_depth != -1:
             continue
 
         #prevent the webcal issue
